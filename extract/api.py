@@ -8,7 +8,6 @@ load_dotenv()
 
 TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
 LOCALIZACAO_URL =  "https://opensky-network.org/api/states/all?lamin=-33.7&lamax=5.2&lomin=-73.9&lomax=-34.7" 
-CHEGADAS_URL  = "https://opensky-network.org/api/flights/arrival?airport=SBGR&begin=1517227200&end=1517230800"
 PARTIDAS_URL = "https://opensky-network.org/api/flights/departure?airport=SBGR&begin=1517227200&end=1517230800"
 INTERVALO_URL = "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800"
 
@@ -26,7 +25,7 @@ def autenticacao_url(TOKEN_URL):
     if response.status_code == 200:
         return response.json()["access_token"]
     else:
-        print(f"A api de autenticação deu erro : {requests.response}")
+        print(f"A api de autenticação deu erro : {response.status_code} - {response.text}")
 
 
 def buscar_voos_brasil(token,LOCALIZACAO_URL):
@@ -37,25 +36,25 @@ def buscar_voos_brasil(token,LOCALIZACAO_URL):
         }
     )
     if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"O endpoint de buscar_voos_brasil está com erro  : {requests.response}")
+        dados = response.json()
+        return dados
+    else: 
+        print(f"O endpoint de buscar_voos_brasil está com erro  : {response.status_code} - {response.text}")
 
-    # dados = response.json()
-    # df = pd.DataFrame(dados["states"])
-    # print(df)
 
-def buscar_chegadas_voos(token,CHEGADAS_URL):
-    response = requests.get(
-        CHEGADAS_URL,
-        headers={"Authorization": f"Bearer {token}"
-        }
-    )
-    if response.status_code == 200:
-            return response.json()
-    else:
-        print(f"O endpoint de buscar_chegadas_voos está com erro : {requests.response}")
-
+def buscar_chegadas_voos(token,begin,end):
+    aeroportos = ["SBGR", "SBGL", "SBBR"]
+    todos=[]
+    for aeroporto in aeroportos:
+        CHEGADAS_URL  = "https://opensky-network.org/api/flights/arrival?airport={aeroporto}&begin={begin}&end={end}"
+        response = requests.get(CHEGADAS_URL, headers={"Authorization": f"Bearer {token}"})
+        if response.status_code == 200:
+             dados = response.json()
+             todos.extend(dados)
+             print(f"{aeroporto}: {len(dados)} voos")
+        else:
+            print(f" {aeroporto}: {response.status_code} - {response.text}")
+    return todos
 
 def buscar_partidas_voos(token,PARTIDAS_URL):
     response = requests.get(
@@ -66,7 +65,7 @@ def buscar_partidas_voos(token,PARTIDAS_URL):
     if response.status_code == 200:
             return response.json()
     else:
-            print(f"O endpoint de buscar_partidas_brasil : {requests.response}")
+            print(f"O endpoint de buscar_partidas_brasil : {response.status_code} - {response.text}")
 
 def intervalo_de_tempos_voos(token,INTERVALO_URL):
     response = requests.get(
@@ -77,13 +76,24 @@ def intervalo_de_tempos_voos(token,INTERVALO_URL):
     if response.status_code == 200:
             return response.json()
     else:
-            print(f"O endpoint de buscar_partidas_brasil : {requests.response}")
+            print(f"O endpoint de buscar_partidas_brasil : {response.status_code} - {response.text}")
 
-resultado = autenticacao_url(TOKEN_URL)
-local = buscar_voos_brasil(resultado,LOCALIZACAO_URL)
-chegada = buscar_chegadas_voos(resultado,CHEGADAS_URL)
-partidas = buscar_partidas_voos(resultado,PARTIDAS_URL)
-intervalo = intervalo_de_tempos_voos(resultado,INTERVALO_URL)
 
-print(intervalo)
+
+
+# forma de resolver frame 
+
+# print(type(local))
+# print(local.keys())
+# print(type(local["time"]))
+# print(type(local["states"]))
+
+# print(local["states"][0])
+
+# Vimos que a classe é de dict 
+# Agora veremos as suas keys
+# Achando as chaves veremis o tipo das chaves 
+
+
+
 
