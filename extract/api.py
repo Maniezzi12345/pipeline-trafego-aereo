@@ -8,7 +8,7 @@ load_dotenv()
 
 TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
 LOCALIZACAO_URL =  "https://opensky-network.org/api/states/all?lamin=-33.7&lamax=5.2&lomin=-73.9&lomax=-34.7" 
-INTERVALO_URL = "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800"
+
 
 
 def autenticacao_url(TOKEN_URL):
@@ -71,7 +71,8 @@ def buscar_partidas_voos(token,begin,end):
     return todos
 
 
-def intervalo_de_tempos_voos(token,INTERVALO_URL):
+def intervalo_de_tempos_voos(token,begin,end):
+    INTERVALO_URL = f"https://opensky-network.org/api/flights/all?begin={begin}&end={end}"
     response = requests.get(
     INTERVALO_URL,
     headers={"Authorization": f"Bearer {token}"
