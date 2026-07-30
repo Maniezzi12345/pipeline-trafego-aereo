@@ -8,7 +8,6 @@ load_dotenv()
 
 TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
 LOCALIZACAO_URL =  "https://opensky-network.org/api/states/all?lamin=-33.7&lamax=5.2&lomin=-73.9&lomax=-34.7" 
-PARTIDAS_URL = "https://opensky-network.org/api/flights/departure?airport=SBGR&begin=1517227200&end=1517230800"
 INTERVALO_URL = "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800"
 
 
@@ -46,26 +45,31 @@ def buscar_chegadas_voos(token,begin,end):
     aeroportos = ["SBGR", "SBGL", "SBBR"]
     todos=[]
     for aeroporto in aeroportos:
-        CHEGADAS_URL  = "https://opensky-network.org/api/flights/arrival?airport={aeroporto}&begin={begin}&end={end}"
+        CHEGADAS_URL  = f"https://opensky-network.org/api/flights/arrival?airport={aeroporto}&begin={begin}&end={end}"
         response = requests.get(CHEGADAS_URL, headers={"Authorization": f"Bearer {token}"})
         if response.status_code == 200:
              dados = response.json()
              todos.extend(dados)
-             print(f"{aeroporto}: {len(dados)} voos")
+             print(f"{aeroporto}: chegadas:{len(dados)} voos")
         else:
             print(f" {aeroporto}: {response.status_code} - {response.text}")
     return todos
 
-def buscar_partidas_voos(token,PARTIDAS_URL):
-    response = requests.get(
-    PARTIDAS_URL,
-    headers={"Authorization": f"Bearer {token}"
-        }
-    )
-    if response.status_code == 200:
-            return response.json()
-    else:
-            print(f"O endpoint de buscar_partidas_brasil : {response.status_code} - {response.text}")
+
+def buscar_partidas_voos(token,begin,end):
+    aeroportos = ["SBGR", "SBGL", "SBBR"]
+    todos = []
+    for aeroporto in aeroportos:
+         PARTIDAS_URL = f"https://opensky-network.org/api/flights/departure?airport={aeroporto}&begin={begin}&end={end}"
+         response = requests.get(PARTIDAS_URL,headers={"Authorization": f"Bearer {token}"})
+         if response.status_code == 200:
+                dados = response.json()
+                todos.extend(dados)
+                print(f"{aeroporto}: saidas:{len(dados)} voos")
+         else:
+                print(f"O endpoint de buscar_partidas_brasil : {response.status_code} - {response.text}")
+    return todos
+
 
 def intervalo_de_tempos_voos(token,INTERVALO_URL):
     response = requests.get(
