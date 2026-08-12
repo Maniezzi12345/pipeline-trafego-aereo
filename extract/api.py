@@ -4,6 +4,25 @@ from dotenv import load_dotenv
 import pandas as pd
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
+COLUNAS_VOOS = [
+    "icao24",
+    "callsign",
+    "origin_country",
+    "time_position",
+    "last_contact",
+    "longitude",
+    "latitude",
+    "baro_altitude",
+    "on_ground",
+    "velocity",
+    "true_track",
+    "vertical_rate",
+    "sensors",
+    "geo_altitude",
+    "squawk",
+    "spi",
+    "position_source"
+]
 
 
 TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
@@ -98,7 +117,5 @@ def intervalo_de_tempos_voos(token,begin,end):
 # Vimos que a classe é de dict 
 # Agora veremos as suas keys
 # Achando as chaves veremis o tipo das chaves 
-
-
 
 
