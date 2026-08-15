@@ -31,10 +31,10 @@ intervalo = intervalo_de_tempos_voos(token, 1753484400, 1753570800)
 
 # 3. converte para DataFrame
 print(" Convertendo para DataFrame...")
-# df_voos      = pd.DataFrame(local["states"], columns=COLUNAS_VOOS)
-# df_chegadas  = pd.DataFrame(chegadas)
+df_voos      = pd.DataFrame(local["states"], columns=COLUNAS_VOOS)
+df_chegadas  = pd.DataFrame(chegadas)
 df_partidas  = pd.DataFrame(partidas)
-# df_intervalo = pd.DataFrame(intervalo)
+df_intervalo = pd.DataFrame(intervalo)
 
 
 # print(df_partidas)
@@ -43,10 +43,13 @@ df_partidas  = pd.DataFrame(partidas)
 engine = criar_engine()
 
 # # 5. salva no banco
-# print("💾 Salvando no banco...")
-# # salvar_dataframe(df_voos,      "raw_voos",      engine)
-# salvar_dataframe(df_chegadas,  "raw_chegadas",  engine)
+print("💾 Salvando no banco...")
+salvar_dataframe(df_voos,      "raw_voos",      engine)
+salvar_dataframe(df_chegadas,  "raw_chegadas",  engine)
 salvar_dataframe(df_partidas,  "raw_partidas",  engine)
-# salvar_dataframe(df_intervalo, "raw_intervalo", engine)
+salvar_dataframe(df_intervalo, "raw_intervalo", engine)
 
 # print("✅ Pipeline concluído!")
+
+# print(df_partidas)
+# print(df_intervalo)
