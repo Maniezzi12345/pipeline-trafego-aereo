@@ -11,7 +11,7 @@ df_partidas_silver = pd.read_sql("SELECT * FROM raw_partidas",engine)
 df_chegadas_silver = pd.read_sql("SELECT * FROM raw_chegadas",engine)
 df_intervalos_silver = pd.read_sql("SELECT * FROM raw_intervalo",engine)
 
-print(df_voos_silver)
+print(df_voos_silver['velocity'])
 
 frames = [df_voos_silver, df_chegadas_silver, df_partidas_silver, df_intervalos_silver]
 
@@ -21,10 +21,6 @@ def icao_maiusculo(df):
      df['icao24'] = df['icao24'].str.upper()
      return df
 
-frames = [icao_maiusculo(df) for df in frames]
-
-
-# Proximos ataques , vamos de timestamp e distancia. Construir esses frames 
 
 def normalizacao_timestamp(df):
      df = df.copy()
@@ -41,7 +37,31 @@ def normalizacao_timestamp(df):
 
      return df
 
+
+def normalizacao_distancia(df):
+    df = df.copy()
+    colunas = [
+        'estDepartureAirportHorizDistance',
+        'estDepartureAirportVertDistance',
+        'estArrivalAirportHorizDistance',
+        'estArrivalAirportVertDistance'
+    ]
+
+    for coluna in colunas:
+        if coluna in df.columns:
+            df[coluna] = df[coluna] / 100
+    return df
+
+def normalizacao_velocidade(df):
+    df = df.copy()
+    df['velocity'] = df["velocity"] * 3.6
+    return df
+
+frame = normalizacao_velocidade(df_voos_silver)
+frames = [normalizacao_distancia(df) for df in frames]
 frames = [normalizacao_timestamp(df) for df in frames]
+frames = [icao_maiusculo(df) for df in frames]
 df_voos_silver, df_chegadas_silver, df_partidas_silver, df_intervalo_silver = frames
 
-print(df_chegadas_silver['lastSeen'])
+
+print(df_voos_silver['velocity'])
